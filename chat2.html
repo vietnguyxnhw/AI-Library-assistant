@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao diện AI Library Assistant - Bản 2 (Tìm sách & Tóm tắt)</title>
+    <style>
+        /* CSS Reset cơ bản */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5; 
+            height: 100vh;
+            display: flex;
+            justify-content: flex-end; 
+        }
+
+        /* --- CONTAINER CHÍNH CỦA EXTENSION --- */
+        #ai-sidebar {
+            width: 430px; 
+            height: 100vh;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            border-left: 1px solid #ddd;
+        }
+
+        /* --- HEADER --- */
+        .ai-header {
+            background-color: #1a365d; 
+            color: white;
+            padding: 15px;
+            border-bottom: 1px solid #102a4a;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .header-title {
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-logo-placeholder {
+            width: 24px;
+            height: 24px;
+            background-color: transparent; 
+            border-radius: 4px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            object-fit: contain; 
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .header-user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        /* --- KHU VỰC CHAT --- */
+        .ai-chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: #f8f9fa;
+        }
+
+        /* Dòng tin nhắn chung */
+        .message {
+            display: flex;
+            flex-direction: column;
+            gap: 8px; 
+            max-width: 92%; 
+            font-size: 14px;
+            line-height: 1.5; 
+        }
+
+        /* Tin nhắn của User (Bên phải) */
+        .msg-user {
+            align-self: flex-end;
+            background-color: #e2e8f0;
+            color: #1e293b;
+            padding: 10px 15px;
+            border-radius: 15px 15px 0 15px;
+            width: fit-content; 
+        }
+
+        /* Tin nhắn của AI (Bên trái) */
+        .msg-ai-container {
+            display: flex;
+            gap: 10px;
+            align-self: flex-start;
+            width: 95%; 
+        }
+
+        .ai-avatar-placeholder {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            object-fit: cover;
+            flex-shrink: 0; 
+        }
+
+        .msg-ai {
+            background-color: #1a365d; 
+            color: white;
+            padding: 12px 15px;
+            border-radius: 15px 15px 15px 0;
+            width: 100%; 
+        }
+
+        /* --- THẺ SẢN PHẨM (RICH CARD) --- */
+        .book-card {
+            background-color: #1a365d; 
+            border: 1px solid #4a6fa5;
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .book-card ul {
+            list-style-type: none;
+            margin-bottom: 10px;
+        }
+
+        .book-card ul li {
+            margin-bottom: 8px;
+        }
+
+        .book-card strong {
+            color: #60a5fa; 
+        }
+
+        .book-title-highlight {
+            color: #4ade80; 
+            text-decoration: underline;
+        }
+
+        .book-cover-placeholder {
+            width: 80px; 
+            height: 110px;
+            background-color: #ddd; 
+            border-radius: 4px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0 15px 0; 
+            border: 1px solid #ccc; 
+            object-fit: cover; 
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background-color: white;
+            color: #1a365d;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-action:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* Highlight cho đoạn text tóm tắt */
+        .summary-text {
+            color: #e2e8f0; /* Chữ màu xám sáng để dễ đọc trên nền tối */
+            text-align: justify;
+        }
+
+        /* --- KHU VỰC NHẬP LIỆU --- */
+        .ai-input-area {
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-box {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .input-box:focus {
+            border-color: #1a365d;
+        }
+
+        .send-btn {
+            background-color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #1a365d;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ai-sidebar">
+        
+        <div class="ai-header">
+            <div class="header-top">
+                <div class="header-title">
+                    <img class="header-logo-placeholder" src="robot-avatar.png" alt="Logo">
+                    AI Library Assistant
+                </div>
+                <button class="close-btn">×</button>
+            </div>
+            <div class="header-user-info">
+                <span>Chào, Nguyễn Hữu Việt 👋</span>
+                <span class="status-badge">📍 Mật độ: 65% (Bình thường)</span>
+            </div>
+        </div>
+
+        <div class="ai-chat-body">
+            
+            <div class="message msg-user">
+                Tìm cho tôi quyển toán giải tích 1
+            </div>
+
+            <div class="msg-ai-container">
+                <img class="ai-avatar-placeholder" src="robot-avatar.png" alt="Robot">
+                <div class="message msg-ai">
+                    <span>Cuốn này phải không bạn? Đây là thẻ sản phẩm:</span>
+                    
+                    <div class="book-card">
+                        <ul>
+                            <li>• Tiêu đề: <span class="book-title-highlight">'Toán Giải tích 1'</span></li>
+                            <li>• Metadata: VM/02182</li>
+                            <li>• Bìa sách:</li>
+                        </ul>
+                        
+                        <img class="book-cover-placeholder" src="book.jpg" alt="Bìa Sách">
+
+                        <ul>
+                            <!-- <li>• <strong>Giá:</strong> 41.000đ</li> -->   
+                            <li>• <strong>Vị trí:</strong> Tầng 3, kệ 6</li>
+                            <li>• <strong>Nút hành động:</strong></li>
+                        </ul>
+
+                        <div class="card-actions">
+                            <button class="btn-action">📄 Xem PDF</button>
+                            <button class="btn-action">✨ Tóm tắt AI</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="message msg-user">
+                ✨ Tóm tắt nội dung cuốn sách này
+            </div>
+
+            <div class="msg-ai-container">
+                <img class="ai-avatar-placeholder" src="robot-avatar.png" alt="Robot">
+                <div class="message msg-ai">
+                    <strong>Đây là bản tóm tắt:</strong><br><br>
+                    <div class="summary-text">
+                                            
+                        📖 Mình tóm tắt nhanh nội dung cuốn sách này cho bạn nhé:<br><br>
+
+                        Cuốn sách cung cấp các kiến thức cơ bản về giải tích như: dãy số, hàm số, giới hạn, đạo hàm, tích phân, phương trình vi phân,... giúp sinh viên nắm chắc nền tảng toán học.<br><br>
+
+                        📌 Mỗi phần đều có ví dụ minh họa rõ ràng, từ cơ bản đến nâng cao để bạn dễ hiểu và áp dụng. Những ví dụ khó hơn cũng được thêm vào để các bạn học khá, giỏi có thể tham khảo thêm.<br><br>
+
+                        📝 Ngoài ra, cuối mỗi chương đều có bài tập kèm hướng dẫn hoặc đáp số để bạn tự luyện tập và củng cố kiến thức.<br><br>
+
+                        💡 Các khái niệm và phương pháp quan trọng được trình bày rõ ràng, dễ hiểu. Một số định lý không có chứng minh chi tiết nhưng vẫn được giải thích ý nghĩa kèm ví dụ cụ thể để bạn nắm chắc bản chất.<br><br>
+
+                        Nếu bạn cần mình tóm tắt kỹ hơn từng chương thì cứ nói nhé 😉
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ai-input-area">
+            <input type="text" class="input-box" placeholder="Nhập câu hỏi của bạn...">
+            <button class="send-btn">🚀</button>
+        </div>
+
+    </div>
+
+</body>
+</html>
