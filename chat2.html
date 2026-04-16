@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giao diện AI Library Assistant - Bản 2 (Tìm sách & Tóm tắt)</title>
+    <title>Giao diện AI Library Assistant - Bản 2 (Cập nhật Sách tương tự)</title>
     <style>
         /* CSS Reset cơ bản */
         * {
@@ -194,6 +194,7 @@
         .card-actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap; /* Giúp các nút tự động xuống dòng nếu bị chật */
         }
 
         .btn-action {
@@ -217,7 +218,7 @@
 
         /* Highlight cho đoạn text tóm tắt */
         .summary-text {
-            color: #e2e8f0; /* Chữ màu xám sáng để dễ đọc trên nền tối */
+            color: #e2e8f0; 
             text-align: justify;
         }
 
@@ -292,7 +293,6 @@
                         <img class="book-cover-placeholder" src="book.jpg" alt="Bìa Sách">
 
                         <ul>
-                            <!-- <li>• <strong>Giá:</strong> 41.000đ</li> -->   
                             <li>• <strong>Vị trí:</strong> Tầng 3, kệ 6</li>
                             <li>• <strong>Nút hành động:</strong></li>
                         </ul>
@@ -300,6 +300,7 @@
                         <div class="card-actions">
                             <button class="btn-action">📄 Xem PDF</button>
                             <button class="btn-action">✨ Tóm tắt AI</button>
+                            <button class="btn-action">📚 Sách tương tự</button>
                         </div>
                     </div>
 
