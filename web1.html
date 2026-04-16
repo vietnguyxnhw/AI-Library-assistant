@@ -33,8 +33,24 @@
             z-index: 10;
         }
 
-        .logo-area { padding: 0 20px 20px 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .logo-area span { font-size: 24px; }
+        .logo-area { 
+            padding: 0 20px 20px 20px; 
+            font-size: 20px; 
+            font-weight: bold; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+        
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: white; /* Nền trắng phòng trường hợp ảnh trong suốt */
+        }
 
         .nav-menu { list-style: none; display: flex; flex-direction: column; }
         .nav-item { padding: 15px 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; font-size: 15px; border-left: 4px solid transparent; }
@@ -95,8 +111,8 @@
             z-index: 10;
         }
 
-        .ai-header { padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; background: #f8fafc; }
-        .ai-header .bot-icon { width: 35px; height: 35px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+        .ai-header-right { padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px; background: #f8fafc; }
+        .bot-icon-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
         .ai-tabs { display: flex; border-bottom: 1px solid #e2e8f0; }
         .ai-tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-gray); border-bottom: 2px solid transparent; }
@@ -122,13 +138,14 @@
 
     <nav class="sidebar-left">
         <div class="logo-area">
-            <span>🤖</span> AI Library
+            <img class="logo-img" src="robot-avatar.png" alt="Logo">
+            AI Library
         </div>
         <ul class="nav-menu">
             <li class="nav-item active" onclick="switchPage('home', this)">🏠 Trang chủ</li>
             <li class="nav-item" onclick="switchPage('workspace', this)">📖 Không gian học AI</li>
             <li class="nav-item" onclick="switchPage('library', this)">📚 Tủ sách của tôi</li>
-            <li class="nav-item" onclick="switchPage('admin', this)">📊 Quản trị (Admin)</li>
+            <li class="nav-item" onclick="switchPage('admin', this)">📊 Thống kê & Xu hướng</li>
         </ul>
     </nav>
 
@@ -147,9 +164,9 @@
             <div class="section-title">Tiếp tục đọc (Continue Learning)</div>
             <div class="carousel">
                 <div class="book-card-mini" style="min-width: 280px; display: flex; height: 120px;">
-                    <div class="book-cover-mock" style="width: 80px; height: 100%;">Bìa Sách</div>
+                    <img src="biac++.jpg" alt="Bìa sách của tôi" style="width: 80px; height: auto;">
                     <div class="book-info-mock" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                        <strong>Cơ sở dữ liệu nâng cao</strong>
+                        <strong>Giáo trình ngôn ngữ C++</strong>
                         <span style="color: var(--text-gray);">Đã đọc: 45/300 trang</span>
                         <div style="width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 10px;">
                             <div style="width: 15%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
@@ -186,7 +203,7 @@
             <h2 class="page-title">Tài liệu đang mượn</h2>
             <div class="grid-cards">
                 <div class="stat-card" style="display: flex; gap: 15px;">
-                    <div style="width: 70px; height: 100px; background: #cbd5e1; border-radius: 4px;"></div>
+                    <img src="biatrituenhantao.jpg" alt="Bìa sách Trí tuệ nhân tạo" style="width: 70px; height: 100px; object-fit: cover; border-radius: 4px;">
                     <div>
                         <h4 style="margin-bottom: 5px; color: var(--primary);">Giáo trình Trí tuệ nhân tạo</h4>
                         <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 10px;">Hạn trả: 22/04/2026</p>
@@ -194,7 +211,7 @@
                     </div>
                 </div>
                 <div class="stat-card" style="display: flex; gap: 15px;">
-                    <div style="width: 70px; height: 100px; background: #cbd5e1; border-radius: 4px;"></div>
+                     <img src="book.jpg" alt="Bìa sách Toán Giải tích 1" style="width: 70px; height: 100px; object-fit: cover; border-radius: 4px;">
                     <div>
                         <h4 style="margin-bottom: 5px; color: var(--primary);">Toán Giải tích 1</h4>
                         <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 10px;">Hạn trả: 17/04/2026</p>
@@ -205,16 +222,16 @@
         </div>
 
         <div id="page-admin" class="page">
-            <h2 class="page-title">Thống kê & Tối ưu Thư viện</h2>
+            <h2 class="page-title">Thống kê & Xu hướng Thư viện</h2>
             <div class="grid-cards">
                 <div class="stat-card">
                     <h4>Bản đồ nhiệt (Mật độ chỗ ngồi)</h4>
                     <div style="height: 150px; background: linear-gradient(45deg, #fef08a 0%, #fca5a5 50%, #fecaca 100%); margin-top: 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #991b1b; font-weight: bold;">
-                        Tầng 3 đang RẤT ĐÔNG (90%)
+                        Phòng đọc đang RẤT ĐÔNG (90%)
                     </div>
                 </div>
                 <div class="stat-card">
-                    <h4>Top Sách Trending</h4>
+                    <h4>Top Sách Trending Tuần Này</h4>
                     <ul style="margin-top: 15px; font-size: 14px; line-height: 2;">
                         <li>1. Giải tích 1 (150 lượt mượn)</li>
                         <li>2. Nhập môn Lập trình (120 lượt)</li>
@@ -227,8 +244,8 @@
     </main>
 
     <aside class="sidebar-right">
-        <div class="ai-header">
-            <div class="bot-icon">🤖</div>
+        <div class="ai-header-right">
+            <img class="bot-icon-img" src="robot-avatar.png" alt="Robot">
             <div>
                 <strong style="display: block; font-size: 15px; color: var(--primary);">AI Assistant</strong>
                 <span style="font-size: 12px; color: #10b981;">● Đang trực tuyến</span>
