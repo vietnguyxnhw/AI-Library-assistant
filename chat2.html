@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giao diện AI Library Assistant - Bản 2 (Cập nhật Sách tương tự)</title>
+    <title>Giao diện AI Library Assistant - Bản 2 (Đề xuất sách theo ngành)</title>
     <style>
         /* CSS Reset cơ bản */
         * {
@@ -194,7 +194,7 @@
         .card-actions {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap; /* Giúp các nút tự động xuống dòng nếu bị chật */
+            flex-wrap: wrap; /* Bổ sung wrap để các nút không bị trào ra ngoài nếu màn hình hẹp */
         }
 
         .btn-action {
@@ -300,10 +300,8 @@
                         <div class="card-actions">
                             <button class="btn-action">📄 Xem PDF</button>
                             <button class="btn-action">✨ Tóm tắt AI</button>
-                            <button class="btn-action">📚 Sách tương tự</button>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -316,24 +314,68 @@
                 <div class="message msg-ai">
                     <strong>Đây là bản tóm tắt:</strong><br><br>
                     <div class="summary-text">
-                                            
                         📖 Mình tóm tắt nhanh nội dung cuốn sách này cho bạn nhé:<br><br>
-
                         Cuốn sách cung cấp các kiến thức cơ bản về giải tích như: dãy số, hàm số, giới hạn, đạo hàm, tích phân, phương trình vi phân,... giúp sinh viên nắm chắc nền tảng toán học.<br><br>
-
                         📌 Mỗi phần đều có ví dụ minh họa rõ ràng, từ cơ bản đến nâng cao để bạn dễ hiểu và áp dụng. Những ví dụ khó hơn cũng được thêm vào để các bạn học khá, giỏi có thể tham khảo thêm.<br><br>
-
                         📝 Ngoài ra, cuối mỗi chương đều có bài tập kèm hướng dẫn hoặc đáp số để bạn tự luyện tập và củng cố kiến thức.<br><br>
-
                         💡 Các khái niệm và phương pháp quan trọng được trình bày rõ ràng, dễ hiểu. Một số định lý không có chứng minh chi tiết nhưng vẫn được giải thích ý nghĩa kèm ví dụ cụ thể để bạn nắm chắc bản chất.<br><br>
-
                         Nếu bạn cần mình tóm tắt kỹ hơn từng chương thì cứ nói nhé 😉
-
                     </div>
                 </div>
             </div>
 
-        </div>
+            <div class="message msg-user">
+                Tôi đang học môn giải tích 1, ngành công nghệ thông tin. Hãy đề xuất sách cho tôi
+            </div>
+
+            <div class="msg-ai-container">
+                <img class="ai-avatar-placeholder" src="robot-avatar.png" alt="Robot">
+                <div class="message msg-ai">
+                    <span>Chào bạn! Đối với sinh viên CNTT, học Giải tích không chỉ để giải phương trình mà còn để áp dụng vào Thuật toán và Phân tích độ phức tạp sau này. <br><br>Hiện tại hệ thống báo có 2 cuốn này cực kỳ phù hợp và đang có sẵn trên kệ, bạn có thể đi lấy ngay nhé:</span>
+                    
+                    <div class="book-card">
+                        <ul>
+                            <li>• Tiêu đề: <span class="book-title-highlight">'Toán Cao Cấp Tập 2 - Giải Tích'</span></li>
+                            <li>• Tác giả: Nguyễn Đình Trí</li>
+                            <li>• Phù hợp: Có nhiều bài tập ứng dụng cho kỹ thuật.</li>
+                        </ul>
+                        
+                        <img class="book-cover-placeholder" src="bia-sach-1.jpg" alt="Bìa Sách 1">
+
+                        <ul>
+                            <li>• <strong>Vị trí:</strong> Tầng 3, kệ 5 (Khu vực Toán học)</li>
+                            <li>• <strong>Nút hành động:</strong></li>
+                        </ul>
+
+                        <div class="card-actions">
+                            <button class="btn-action">📄 Xem PDF</button>
+                            <button class="btn-action">✨ Tóm tắt AI</button>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <ul>
+                            <li>• Tiêu đề: <span class="book-title-highlight">'Toán Học Rời Rạc & Ứng Dụng'</span></li>
+                            <li>• Tác giả: Kenneth H. Rosen</li>
+                            <li>• Phù hợp: Bổ trợ tư duy giải tích chuyên sâu cho dân IT.</li>
+                        </ul>
+                        
+                        <img class="book-cover-placeholder" src="bia-sach-2.jpg" alt="Bìa Sách 2">
+
+                        <ul>
+                            <li>• <strong>Vị trí:</strong> Tầng 2, kệ 12 (Khu vực IT)</li>
+                            <li>• <strong>Nút hành động:</strong> Còn 1 cuốn duy nhất</li>
+                        </ul>
+
+                        <div class="card-actions">
+                            <button class="btn-action">📄 Xem PDF</button>
+                            <button class="btn-action">✨ Tóm tắt AI</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            </div>
 
         <div class="ai-input-area">
             <input type="text" class="input-box" placeholder="Nhập câu hỏi của bạn...">
