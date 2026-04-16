@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Library Assistant - Dashboard</title>
+    <style>
+        /* CSS Reset & Variables */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b4c7e;
+            --bg-main: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --accent: #3b82f6;
+            --warning: #fef08a;
+            --warning-text: #854d0e;
+        }
+
+        body { display: flex; height: 100vh; overflow: hidden; background-color: var(--bg-main); color: var(--text-dark); }
+
+        /* ================= 1. CỘT TRÁI (LEFT SIDEBAR - 20%) ================= */
+        .sidebar-left {
+            width: 20%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .logo-area { padding: 0 20px 20px 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .logo-area span { font-size: 24px; }
+
+        .nav-menu { list-style: none; display: flex; flex-direction: column; }
+        .nav-item { padding: 15px 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; font-size: 15px; border-left: 4px solid transparent; }
+        .nav-item:hover { background-color: var(--secondary); }
+        .nav-item.active { background-color: var(--secondary); border-left-color: #60a5fa; font-weight: 600; }
+
+        /* ================= 2. CỘT GIỮA (MAIN CONTENT - 55%) ================= */
+        .main-content {
+            width: 55%;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Các trang sẽ được ẩn/hiện bằng JS */
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .page-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; color: var(--primary); }
+
+        /* -- Thành phần Màn 1: Trang chủ -- */
+        .search-hero { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 40px 30px; border-radius: 16px; text-align: center; color: white; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .search-hero h2 { margin-bottom: 20px; font-weight: 500; }
+        .search-bar { width: 80%; padding: 15px 25px; border-radius: 30px; border: none; font-size: 16px; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        .alert-box { background-color: var(--warning); color: var(--warning-text); padding: 15px; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; font-weight: 500; border: 1px solid #facc15; }
+        
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Netflix style carousel */
+        .carousel { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 25px; scrollbar-width: thin; }
+        .carousel::-webkit-scrollbar { height: 6px; }
+        .carousel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .book-card-mini { min-width: 140px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; cursor: pointer; border: 1px solid #e2e8f0; }
+        .book-card-mini:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .book-cover-mock { height: 180px; background-color: #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px; }
+        .book-info-mock { padding: 10px; font-size: 13px; }
+        .book-info-mock strong { display: block; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* -- Thành phần Màn 2: Không gian AI -- */
+        .pdf-viewer-mock { background-color: white; height: 70vh; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 15px; color: var(--text-gray); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn-upload { background-color: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+
+        /* -- Thành phần Màn 3 & 4 (Mock bảng) -- */
+        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+
+        /* ================= 3. CỘT PHẢI (RIGHT SIDEBAR / AI CO-PILOT - 25%) ================= */
+        .sidebar-right {
+            width: 25%;
+            background-color: white;
+            border-left: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.02);
+            z-index: 10;
+        }
+
+        .ai-header { padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; background: #f8fafc; }
+        .ai-header .bot-icon { width: 35px; height: 35px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+        
+        .ai-tabs { display: flex; border-bottom: 1px solid #e2e8f0; }
+        .ai-tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-gray); border-bottom: 2px solid transparent; }
+        .ai-tab.active { color: var(--primary); border-bottom-color: var(--accent); background: #f8fafc; }
+
+        .chat-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #ffffff; }
+        .chat-bubble { max-width: 85%; padding: 12px 15px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+        .chat-ai { background-color: #f1f5f9; color: var(--text-dark); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-user { background-color: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        
+        /* Chip gợi ý */
+        .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .chip { background: white; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; color: var(--text-dark); transition: 0.2s; }
+        .chip:hover { background: #f1f5f9; border-color: #94a3b8; }
+
+        .input-area { padding: 15px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; background: white; }
+        .input-area input { flex: 1; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 25px; outline: none; background: #f8fafc; }
+        .input-area button { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar-left">
+        <div class="logo-area">
+            <span>🤖</span> AI Library
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="switchPage('home', this)">🏠 Trang chủ</li>
+            <li class="nav-item" onclick="switchPage('workspace', this)">📖 Không gian học AI</li>
+            <li class="nav-item" onclick="switchPage('library', this)">📚 Tủ sách của tôi</li>
+            <li class="nav-item" onclick="switchPage('admin', this)">📊 Quản trị (Admin)</li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        
+        <div id="page-home" class="page active">
+            <div class="search-hero">
+                <h2>Bạn muốn học gì hôm nay?</h2>
+                <input type="text" class="search-bar" placeholder="Hỏi AI tìm tài liệu, sách, khóa học...">
+            </div>
+
+            <div class="alert-box">
+                ⚠️ Cuốn "Toán Giải tích 1" của bạn sẽ hết hạn vào ngày mai. <a href="#" style="color: inherit;">[Gia hạn ngay]</a>
+            </div>
+
+            <div class="section-title">Tiếp tục đọc (Continue Learning)</div>
+            <div class="carousel">
+                <div class="book-card-mini" style="min-width: 280px; display: flex; height: 120px;">
+                    <div class="book-cover-mock" style="width: 80px; height: 100%;">Bìa Sách</div>
+                    <div class="book-info-mock" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <strong>Cơ sở dữ liệu nâng cao</strong>
+                        <span style="color: var(--text-gray);">Đã đọc: 45/300 trang</span>
+                        <div style="width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 10px;">
+                            <div style="width: 15%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Dành riêng cho sinh viên CNTT <span>👉</span></div>
+            <div class="carousel">
+                <div class="book-card-mini"><div class="book-cover-mock" style="background:#fca5a5;">Sách C++</div><div class="book-info-mock"><strong>Lập trình C++</strong>Cơ bản</div></div>
+                <div class="book-card-mini"><div class="book-cover-mock" style="background:#93c5fd;">Python ML</div><div class="book-info-mock"><strong>Machine Learning</strong>Nâng cao</div></div>
+                <div class="book-card-mini"><div class="book-cover-mock" style="background:#86efac;">Cấu trúc DL</div><div class="book-info-mock"><strong>Data Structure</strong>Cơ bản</div></div>
+                <div class="book-card-mini"><div class="book-cover-mock">Tài liệu...</div><div class="book-info-mock"><strong>Xem thêm</strong></div></div>
+            </div>
+
+            <div class="section-title">Trending mùa thi <span>🔥</span></div>
+            <div class="carousel">
+                <div class="book-card-mini"><div class="book-cover-mock" style="background:#fde047;">Giải Tích</div><div class="book-info-mock"><strong>Đề cương Giải tích</strong>Thịnh hành</div></div>
+                <div class="book-card-mini"><div class="book-cover-mock" style="background:#d8b4fe;">Vật Lý 1</div><div class="book-info-mock"><strong>Tổng hợp Vật lý</strong>Thịnh hành</div></div>
+            </div>
+        </div>
+
+        <div id="page-workspace" class="page">
+            <h2 class="page-title">Không gian học tập AI</h2>
+            <div class="pdf-viewer-mock">
+                <div style="font-size: 40px;">📄</div>
+                <p>Chưa có tài liệu nào được mở</p>
+                <button class="btn-upload">Tải file PDF của bạn lên</button>
+            </div>
+        </div>
+
+        <div id="page-library" class="page">
+            <h2 class="page-title">Tài liệu đang mượn</h2>
+            <div class="grid-cards">
+                <div class="stat-card" style="display: flex; gap: 15px;">
+                    <div style="width: 70px; height: 100px; background: #cbd5e1; border-radius: 4px;"></div>
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: var(--primary);">Giáo trình Trí tuệ nhân tạo</h4>
+                        <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 10px;">Hạn trả: 22/04/2026</p>
+                        <span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Còn 6 ngày</span>
+                    </div>
+                </div>
+                <div class="stat-card" style="display: flex; gap: 15px;">
+                    <div style="width: 70px; height: 100px; background: #cbd5e1; border-radius: 4px;"></div>
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: var(--primary);">Toán Giải tích 1</h4>
+                        <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 10px;">Hạn trả: 17/04/2026</p>
+                        <span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Hết hạn ngày mai!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-admin" class="page">
+            <h2 class="page-title">Thống kê & Tối ưu Thư viện</h2>
+            <div class="grid-cards">
+                <div class="stat-card">
+                    <h4>Bản đồ nhiệt (Mật độ chỗ ngồi)</h4>
+                    <div style="height: 150px; background: linear-gradient(45deg, #fef08a 0%, #fca5a5 50%, #fecaca 100%); margin-top: 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #991b1b; font-weight: bold;">
+                        Tầng 3 đang RẤT ĐÔNG (90%)
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h4>Top Sách Trending</h4>
+                    <ul style="margin-top: 15px; font-size: 14px; line-height: 2;">
+                        <li>1. Giải tích 1 (150 lượt mượn)</li>
+                        <li>2. Nhập môn Lập trình (120 lượt)</li>
+                        <li>3. TOEIC Preparation (95 lượt)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <aside class="sidebar-right">
+        <div class="ai-header">
+            <div class="bot-icon">🤖</div>
+            <div>
+                <strong style="display: block; font-size: 15px; color: var(--primary);">AI Assistant</strong>
+                <span style="font-size: 12px; color: #10b981;">● Đang trực tuyến</span>
+            </div>
+        </div>
+
+        <div class="ai-tabs">
+            <div class="ai-tab active" id="tab-chat">Chat 24/7</div>
+            <div class="ai-tab" id="tab-tools">Công cụ AI</div>
+        </div>
+
+        <div class="chat-area" id="ai-chat-content">
+            <div class="chat-bubble chat-ai">
+                Xin chào Việt Nguyễn! Mình là trợ lý AI của Thư viện. Mình có thể giúp gì cho bạn hôm nay?
+            </div>
+            
+            <div class="chip-container">
+                <div class="chip">🕒 Giờ mở cửa?</div>
+                <div class="chip">📍 Còn chỗ trống không?</div>
+                <div class="chip">📖 Tìm sách AI</div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" placeholder="Hỏi trợ lý AI...">
+            <button>🚀</button>
+        </div>
+    </aside>
+
+    <script>
+        function switchPage(pageId, element) {
+            // 1. Gỡ class 'active' khỏi tất cả các menu
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            // 2. Thêm class 'active' cho menu được click
+            element.classList.add('active');
+
+            // 3. Ẩn tất cả các trang
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // 4. Hiển thị trang mục tiêu
+            document.getElementById('page-' + pageId).classList.add('active');
+
+            // 5. [Tính năng nhỏ] Đổi trạng thái AI Co-pilot theo context
+            const aiTabs = document.querySelectorAll('.ai-tab');
+            const chatArea = document.getElementById('ai-chat-content');
+            
+            if (pageId === 'workspace') {
+                aiTabs[0].classList.remove('active');
+                aiTabs[1].classList.add('active');
+                chatArea.innerHTML = `
+                    <div class="chat-bubble chat-ai">
+                        Bạn đang ở Không gian học tập. Hãy upload tài liệu để mình có thể:
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Tóm tắt nội dung</li>
+                            <li>Tạo Flashcard</li>
+                            <li>Tạo bài thi Quiz</li>
+                        </ul>
+                    </div>
+                    <div class="chip-container">
+                        <div class="chip" style="background: var(--primary); color: white;">✨ Tóm tắt ngay</div>
+                        <div class="chip">Tạo bộ Flashcard</div>
+                    </div>
+                `;
+            } else {
+                aiTabs[1].classList.remove('active');
+                aiTabs[0].classList.add('active');
+                chatArea.innerHTML = `
+                    <div class="chat-bubble chat-ai">
+                        Cần hỗ trợ thông tin thư viện? Hãy hỏi mình nhé!
+                    </div>
+                    <div class="chip-container">
+                        <div class="chip">🕒 Giờ mở cửa?</div>
+                        <div class="chip">📍 Còn chỗ trống không?</div>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
